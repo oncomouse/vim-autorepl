@@ -28,6 +28,7 @@ function! s:start_repl(command, ...) abort
     bp
     " Hook original buffer up to slime:
     call s:connect_to_slime(output)
+    call s:connect_to_conjure(1)
     if focus
       bp
     endif
@@ -35,6 +36,7 @@ function! s:start_repl(command, ...) abort
     return output
   endif
   " If not interactive, start the job:
+  call s:connect_to_conjure(1)
   return has('nvim') ? jobstart(a:command) : job_getchannel(job_start(a:command))
 endfunction
 function! s:is_job_running(id) abort
@@ -53,6 +55,19 @@ function! s:connect_to_slime(val) abort
   " If slime is using neovim or vimterminal as a target:
   if get(g:, 'slime_target', '') =~# 'vim'
     let b:slime_config = eval("{'".(has('nvim') ? 'jobid' : 'bufnr')."': ".a:val.'}')
+  endif
+endfunction
+function! s:connect_to_conjure(...) abort
+  let first = get(a:, 000, 0)
+  if !has_key(g:, 'conjure#filetype_client')
+    return
+  endif
+  if has_key(g:conjure#filetype_client, &filetype)
+    " Wait for the REPL to boot:
+    if first
+      sleep 150m
+    endif
+    ConjureConnect
   endif
 endfunction
 function! s:track_buffer(ft) abort
@@ -94,12 +109,14 @@ function! s:load_repl(ft, auto) abort
           if buffer_exists(bufn)
             execute('buffer '.bufn)
             call s:connect_to_slime(s:autorepl_jobs[a:ft])
+            call s:connect_to_conjure()
             bp
           endif
         endfor
       endif
     else
       call s:connect_to_slime(s:autorepl_jobs[a:ft])
+      call s:connect_to_conjure()
       call s:track_buffer(a:ft)
     endif
   endif
@@ -115,6 +132,7 @@ endfunction
 function! autorepl#attach_repl() abort
   if get(s:autorepl_jobs, &filetype, -1) >= 0
     call s:connect_to_slime(s:autorepl_jobs[&filetype])
+    call s:connect_to_conjure()
     call s:track_buffer(&filetype)
   else
     echohl ErrorMsg | echo 'No running REPL found for '.&filetype | echohl None
