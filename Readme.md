@@ -1,6 +1,6 @@
 # vim-autorepl
 
-**vim-autorepl** starts [REPLs (Read, Evaluate, Print Loop)](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) quickly and easily. It can be configured to start a REPL when you load a file of a particular type or only when you need it.
+**vim-autorepl** starts [REPLs (Read, Evaluate, Print Loop)](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) quickly and easily in Vim and Neovim. It can be configured to start a REPL when you load a file of a particular type or only when you need it.
 
 The plugin optionally integrates with [vim-slime](https://github.com/jpalardy/vim-slime), to create an easy-to-use setup for evaluating code within vim.
 
