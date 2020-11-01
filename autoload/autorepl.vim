@@ -24,6 +24,7 @@ function! s:start_repl(command, ...) abort
       set nonumber
       set norelativenumber
     endif
+    file autorepl
     let output = has('nvim') ? &channel : buffer_number()
     bp
     " Hook original buffer up to slime:
