@@ -21,8 +21,8 @@ function! s:start_repl(command, ...) abort
     call execute(':terminal '.(has('nvim') ? '' : '++curwin ++kill=term ').expand(command))
     " Turn off line numbers in term buffer, if we want to:
     if g:autorepl_no_line_numbers
-      set nonumber
-      set norelativenumber
+      setlocal nonumber
+      setlocal norelativenumber
     endif
     call execute(':file autorepl-' . expand('%:t'))
     let output = has('nvim') ? &channel : buffer_number()
